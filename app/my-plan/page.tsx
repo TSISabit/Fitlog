@@ -7,14 +7,12 @@ import { Clock, Flame, Star, Check, X, ArrowRight } from "lucide-react";
 import { useWorkout } from "@/context/WorkoutContext";
 import { Workout } from "@/types/workout";
 
-// ক্যালোরি স্ট্রিং বা যেকোনো কী থেকে নাম্বার বের করার ফাংশন
 function getCalories(item: Workout): number {
   const val = item.calories ?? item.calorie ?? item.caloriesBurned ?? 0;
   const parsed = typeof val === "string" ? parseInt(val.replace(/\D/g, ""), 10) : Number(val);
   return isNaN(parsed) ? 0 : parsed;
 }
 
-// ডিউরেশন পার্স করার ফাংশন
 function getDuration(item: Workout): number {
   const val = item.duration ?? 0;
   const parsed = typeof val === "string" ? parseInt(val.replace(/\D/g, ""), 10) : Number(val);
@@ -25,7 +23,6 @@ export default function MyPlanPage() {
   const { todayPlan, savedWorkouts, removeFromPlan, removeFromSaved, toggleDone } = useWorkout();
   const [activeTab, setActiveTab] = useState<"plan" | "saved">("plan");
 
-  // লাইভ সামারি হিসাব
   const totalMinutes = todayPlan.reduce((acc, curr) => acc + getDuration(curr), 0);
   const totalCalories = todayPlan.reduce((acc, curr) => acc + getCalories(curr), 0);
 
