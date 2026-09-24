@@ -3,8 +3,10 @@ export interface Workout {
   name: string;
   category: string[];
   equipment: string;
-  duration: number;
-  calories: number;
+  duration: number | string;
+  calories?: number | string;
+  calorie?: number | string;
+  caloriesBurned?: number | string;
   rating: number;
   difficulty?: string;
   sets?: number;
