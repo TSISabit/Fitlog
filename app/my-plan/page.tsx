@@ -5,13 +5,29 @@ import Link from "next/link";
 import Image from "next/image";
 import { Clock, Flame, Star, Check, X, ArrowRight } from "lucide-react";
 import { useWorkout } from "@/context/WorkoutContext";
+import { Workout } from "@/types/workout";
+
+// ক্যালোরি স্ট্রিং বা যেকোনো কী থেকে নাম্বার বের করার ফাংশন
+function getCalories(item: Workout): number {
+  const val = item.calories ?? item.calorie ?? item.caloriesBurned ?? 0;
+  const parsed = typeof val === "string" ? parseInt(val.replace(/\D/g, ""), 10) : Number(val);
+  return isNaN(parsed) ? 0 : parsed;
+}
+
+// ডিউরেশন পার্স করার ফাংশন
+function getDuration(item: Workout): number {
+  const val = item.duration ?? 0;
+  const parsed = typeof val === "string" ? parseInt(val.replace(/\D/g, ""), 10) : Number(val);
+  return isNaN(parsed) ? 0 : parsed;
+}
 
 export default function MyPlanPage() {
   const { todayPlan, savedWorkouts, removeFromPlan, removeFromSaved, toggleDone } = useWorkout();
   const [activeTab, setActiveTab] = useState<"plan" | "saved">("plan");
 
-  const totalMinutes = todayPlan.reduce((acc, curr) => acc + (curr.duration || 0), 0);
-  const totalCalories = todayPlan.reduce((acc, curr) => acc + (curr.calories || 0), 0);
+  // লাইভ সামারি হিসাব
+  const totalMinutes = todayPlan.reduce((acc, curr) => acc + getDuration(curr), 0);
+  const totalCalories = todayPlan.reduce((acc, curr) => acc + getCalories(curr), 0);
 
   const displayList = activeTab === "plan" ? todayPlan : savedWorkouts;
 
@@ -99,7 +115,7 @@ export default function MyPlanPage() {
               }`}
             >
               <div className="flex items-center gap-4 w-full sm:w-auto">
-                <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-zinc-800 shrink-0">
+                <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-zinc-800 flex-shrink-0">
                   <Image src={item.image || "/assets/banner.png"} alt={item.name} fill className="object-cover" />
                 </div>
                 <div>
@@ -108,8 +124,8 @@ export default function MyPlanPage() {
                   </h4>
                   <p className="text-xs text-zinc-400">{item.equipment}</p>
                   <div className="flex items-center gap-3 text-[11px] text-zinc-500 mt-1">
-                    <span className="flex items-center gap-0.5"><Clock className="w-3 h-3" />{item.duration}m</span>
-                    <span className="flex items-center gap-0.5"><Flame className="w-3 h-3" />{item.calories}cal</span>
+                    <span className="flex items-center gap-0.5"><Clock className="w-3 h-3" />{getDuration(item)}m</span>
+                    <span className="flex items-center gap-0.5"><Flame className="w-3 h-3" />{getCalories(item)} cal</span>
                     <span className="flex items-center gap-0.5"><Star className="w-3 h-3 text-amber-400 fill-amber-400" />{item.rating}</span>
                   </div>
                 </div>
