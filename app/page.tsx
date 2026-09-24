@@ -59,7 +59,7 @@ export default function HomePage() {
 
           <div className="relative h-72 sm:h-96 md:h-112.5 w-full rounded-2xl overflow-hidden border border-zinc-800">
             <Image
-              src="/public/assets/banner.png"
+              src="/assets/banner.png"
               alt="Train Hard"
               fill
               className="object-cover"
@@ -124,7 +124,7 @@ export default function HomePage() {
               >
                 <div className="relative h-48 w-full bg-zinc-800">
                   <Image
-                    src={workout.image || "/public/assets/banner.png"}
+                    src={workout.image || "/assets/banner.png"}
                     alt={workout.name}
                     fill
                     className="object-cover group-hover:scale-105 transition duration-300"
