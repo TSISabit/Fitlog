@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Clock, Flame, Star, Check, X, ArrowRight } from "lucide-react";
 import { useWorkout } from "@/context/WorkoutContext";
 import { Workout } from "@/types/workout";
@@ -23,16 +23,13 @@ function getDuration(item: Workout): number {
 function MyPlanContent() {
   const { todayPlan, savedWorkouts, removeFromPlan, removeFromSaved, toggleDone } = useWorkout();
   const searchParams = useSearchParams();
-  const [activeTab, setActiveTab] = useState<"plan" | "saved">("plan");
+  const router = useRouter();
 
-  useEffect(() => {
-    const tabParam = searchParams.get("tab");
-    if (tabParam === "saved") {
-      setActiveTab("saved");
-    } else if (tabParam === "plan") {
-      setActiveTab("plan");
-    }
-  }, [searchParams]);
+  const activeTab = searchParams.get("tab") === "saved" ? "saved" : "plan";
+
+  const setTab = (tab: "plan" | "saved") => {
+    router.push(`/my-plan?tab=${tab}`, { scroll: false });
+  };
 
   const totalMinutes = todayPlan.reduce((acc, curr) => acc + getDuration(curr), 0);
   const totalCalories = todayPlan.reduce((acc, curr) => acc + getCalories(curr), 0);
@@ -71,7 +68,7 @@ function MyPlanContent() {
       {/* Tabs */}
       <div className="flex border-b border-zinc-800 gap-8">
         <button
-          onClick={() => setActiveTab("plan")}
+          onClick={() => setTab("plan")}
           className={`pb-3 text-sm font-bold tracking-wider uppercase transition-colors relative cursor-pointer ${
             activeTab === "plan" ? "text-[#ccff00]" : "text-zinc-500 hover:text-zinc-300"
           }`}
@@ -82,7 +79,7 @@ function MyPlanContent() {
           )}
         </button>
         <button
-          onClick={() => setActiveTab("saved")}
+          onClick={() => setTab("saved")}
           className={`pb-3 text-sm font-bold tracking-wider uppercase transition-colors relative cursor-pointer ${
             activeTab === "saved" ? "text-[#ccff00]" : "text-zinc-500 hover:text-zinc-300"
           }`}
