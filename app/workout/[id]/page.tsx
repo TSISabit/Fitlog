@@ -6,6 +6,18 @@ import { Plus, Bookmark, Clock, Flame, Star } from "lucide-react";
 import { Workout } from "@/types/workout";
 import { useWorkout } from "@/context/WorkoutContext";
 
+function getCalories(item: Workout): number {
+  const val = item.calories ?? item.calorie ?? item.caloriesBurned ?? 0;
+  const parsed = typeof val === "string" ? parseInt(val.replace(/\D/g, ""), 10) : Number(val);
+  return isNaN(parsed) ? 0 : parsed;
+}
+
+function getDuration(item: Workout): number {
+  const val = item.duration ?? 0;
+  const parsed = typeof val === "string" ? parseInt(val.replace(/\D/g, ""), 10) : Number(val);
+  return isNaN(parsed) ? 0 : parsed;
+}
+
 export default function WorkoutDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const [workout, setWorkout] = useState<Workout | null>(null);
@@ -38,12 +50,15 @@ export default function WorkoutDetailPage({ params }: { params: Promise<{ id: st
     );
   }
 
+  const caloriesValue = getCalories(workout);
+  const durationValue = getDuration(workout);
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
         
-        {/* Left Column*/}
-        <div className="relative h-80 sm:h-112.5 lg:h-137.5 w-full rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-900">
+        {/* Left Column: Visual/Media */}
+        <div className="relative h-80 sm:h-[450px] lg:h-[550px] w-full rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-900">
           <Image
             src={workout.image || "/assets/banner.png"}
             alt={workout.name}
@@ -53,7 +68,7 @@ export default function WorkoutDetailPage({ params }: { params: Promise<{ id: st
           />
         </div>
 
-        {/* Right Column*/}
+        {/* Right Column: Specifications & Instructions */}
         <div className="space-y-6">
           <div className="space-y-2">
             <div className="flex flex-wrap gap-2">
@@ -79,13 +94,40 @@ export default function WorkoutDetailPage({ params }: { params: Promise<{ id: st
 
           {/* Key Specs Table */}
           <div className="border border-zinc-800 rounded-xl divide-y divide-zinc-800/80 bg-zinc-900/30 text-xs sm:text-sm">
-            <div className="grid grid-cols-2 p-3"><span className="text-zinc-500">EQUIPMENT</span><span className="text-zinc-200 font-medium text-right">{workout.equipment}</span></div>
-            <div className="grid grid-cols-2 p-3"><span className="text-zinc-500">DIFFICULTY</span><span className="text-zinc-200 font-medium text-right">{workout.difficulty || "Intermediate"}</span></div>
-            <div className="grid grid-cols-2 p-3"><span className="text-zinc-500">SETS</span><span className="text-zinc-200 font-medium text-right">{workout.sets || 4}</span></div>
-            <div className="grid grid-cols-2 p-3"><span className="text-zinc-500">REPS</span><span className="text-zinc-200 font-medium text-right">{workout.reps || "8-12"}</span></div>
-            <div className="grid grid-cols-2 p-3"><span className="text-zinc-500">DURATION</span><span className="text-zinc-200 font-medium text-right flex items-center justify-end gap-1"><Clock className="w-3.5 h-3.5" />{workout.duration} min</span></div>
-            <div className="grid grid-cols-2 p-3"><span className="text-zinc-500">CALORIES</span><span className="text-zinc-200 font-medium text-right flex items-center justify-end gap-1"><Flame className="w-3.5 h-3.5" />{workout.calories} kcal</span></div>
-            <div className="grid grid-cols-2 p-3"><span className="text-zinc-500">RATING</span><span className="text-zinc-200 font-medium text-right flex items-center justify-end gap-1"><Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />{workout.rating}</span></div>
+            <div className="grid grid-cols-2 p-3">
+              <span className="text-zinc-500">EQUIPMENT</span>
+              <span className="text-zinc-200 font-medium text-right">{workout.equipment}</span>
+            </div>
+            <div className="grid grid-cols-2 p-3">
+              <span className="text-zinc-500">DIFFICULTY</span>
+              <span className="text-zinc-200 font-medium text-right">{workout.difficulty || "Intermediate"}</span>
+            </div>
+            <div className="grid grid-cols-2 p-3">
+              <span className="text-zinc-500">SETS</span>
+              <span className="text-zinc-200 font-medium text-right">{workout.sets || 4}</span>
+            </div>
+            <div className="grid grid-cols-2 p-3">
+              <span className="text-zinc-500">REPS</span>
+              <span className="text-zinc-200 font-medium text-right">{workout.reps || "8-12"}</span>
+            </div>
+            <div className="grid grid-cols-2 p-3">
+              <span className="text-zinc-500">DURATION</span>
+              <span className="text-zinc-200 font-medium text-right flex items-center justify-end gap-1">
+                <Clock className="w-3.5 h-3.5" />{durationValue} min
+              </span>
+            </div>
+            <div className="grid grid-cols-2 p-3">
+              <span className="text-zinc-500">CALORIES</span>
+              <span className="text-zinc-200 font-medium text-right flex items-center justify-end gap-1">
+                <Flame className="w-3.5 h-3.5" />{caloriesValue} kcal
+              </span>
+            </div>
+            <div className="grid grid-cols-2 p-3">
+              <span className="text-zinc-500">RATING</span>
+              <span className="text-zinc-200 font-medium text-right flex items-center justify-end gap-1">
+                <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />{workout.rating}
+              </span>
+            </div>
           </div>
 
           {/* Instructions */}
@@ -108,14 +150,14 @@ export default function WorkoutDetailPage({ params }: { params: Promise<{ id: st
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
             <button
-              onClick={() => addToPlan(workout)}
+              onClick={() => addToPlan({ ...workout, calories: caloriesValue, duration: durationValue })}
               className="flex-1 inline-flex items-center justify-center gap-2 bg-[#ccff00] text-black font-bold py-3.5 px-6 rounded-md hover:bg-[#b8e600] transition active:scale-95 text-sm"
             >
               <Plus className="w-4 h-4" />
               Add to today&apos;s plan
             </button>
             <button
-              onClick={() => saveForLater(workout)}
+              onClick={() => saveForLater({ ...workout, calories: caloriesValue, duration: durationValue })}
               className="flex-1 inline-flex items-center justify-center gap-2 border border-zinc-700 hover:border-zinc-500 text-white font-bold py-3.5 px-6 rounded-md transition active:scale-95 text-sm bg-zinc-900/60"
             >
               <Bookmark className="w-4 h-4" />
