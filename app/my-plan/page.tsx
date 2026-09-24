@@ -100,7 +100,7 @@ export default function MyPlanPage() {
             >
               <div className="flex items-center gap-4 w-full sm:w-auto">
                 <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-zinc-800 shrink-0">
-                  <Image src={item.image || "/public/assets/banner.png"} alt={item.name} fill className="object-cover" />
+                  <Image src={item.image || "/assets/banner.png"} alt={item.name} fill className="object-cover" />
                 </div>
                 <div>
                   <h4 className={`font-display font-bold text-base text-white ${item.isDone ? "line-through text-zinc-500" : ""}`}>

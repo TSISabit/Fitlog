@@ -45,7 +45,7 @@ export default function WorkoutDetailPage({ params }: { params: Promise<{ id: st
         {/* Left Column*/}
         <div className="relative h-80 sm:h-112.5 lg:h-137.5 w-full rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-900">
           <Image
-            src={workout.image || "/public/assets/banner.png"}
+            src={workout.image || "/assets/banner.png"}
             alt={workout.name}
             fill
             className="object-cover"

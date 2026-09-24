@@ -7,7 +7,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
         <Link href="/" className="flex items-center gap-2">
           <div className="relative w-6 h-6">
-            <Image src="/public/assets/logo.png" alt="FitLog Logo" fill className="object-contain" />
+            <Image src="/assets/logo.png" alt="FitLog Logo" fill className="object-contain" />
           </div>
           <span className="font-bold text-sm tracking-wider text-white">FITLOG</span>
         </Link>

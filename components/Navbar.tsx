@@ -17,7 +17,7 @@ export default function Navbar() {
         <Link href="/" className="flex items-center gap-2">
           <div className="relative w-8 h-8 rounded overflow-hidden">
             <Image 
-              src="/public/assets/logo.png" 
+              src="/assets/logo.png" 
               alt="FitLog Logo" 
               fill 
               className="object-contain"
