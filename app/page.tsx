@@ -22,12 +22,21 @@ export default function HomePage() {
       .finally(() => setLoading(false));
   }, []);
 
+  const getNumericValue = (workout: Workout, key: "duration" | "calories" | "rating"): number => {
+    let val: string | number | undefined = workout[key];
+    if (key === "calories") {
+      val = workout.calories ?? workout.calorie ?? workout.caloriesBurned ?? 0;
+    }
+    const parsed = typeof val === "string" ? parseInt(val.replace(/\D/g, ""), 10) : Number(val);
+    return isNaN(parsed) ? 0 : parsed;
+  };
+
   const sortedWorkouts = [...workouts]
     .filter((w) =>
       w.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (Array.isArray(w.category) && w.category.some((c) => c.toLowerCase().includes(searchQuery.toLowerCase())))
     )
-    .sort((a, b) => (b[sortBy] || 0) - (a[sortBy] || 0));
+    .sort((a, b) => getNumericValue(b, sortBy) - getNumericValue(a, sortBy));
 
   return (
     <div className="space-y-24 pb-20">
@@ -57,7 +66,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="relative h-72 sm:h-96 md:h-112.5 w-full rounded-2xl overflow-hidden border border-zinc-800">
+          <div className="relative h-72 sm:h-96 md:h-[450px] w-full rounded-2xl overflow-hidden border border-zinc-800">
             <Image
               src="/assets/banner.png"
               alt="Train Hard"
@@ -158,10 +167,10 @@ export default function HomePage() {
 
                   <div className="flex items-center justify-between text-xs text-zinc-400 border-t border-zinc-800/80 pt-3">
                     <span className="flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5 text-zinc-500" /> {workout.duration} min
+                      <Clock className="w-3.5 h-3.5 text-zinc-500" /> {getNumericValue(workout, "duration")} min
                     </span>
                     <span className="flex items-center gap-1">
-                      <Flame className="w-3.5 h-3.5 text-zinc-500" /> {workout.calories} kcal
+                      <Flame className="w-3.5 h-3.5 text-zinc-500" /> {getNumericValue(workout, "calories")} kcal
                     </span>
                     <span className="flex items-center gap-1">
                       <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" /> {workout.rating}
