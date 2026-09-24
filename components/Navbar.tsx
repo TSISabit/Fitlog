@@ -52,8 +52,8 @@ export default function Navbar() {
         {/* Right Badges */}
         <div className="flex items-center gap-3">
           <Link
-            href="/my-plan"
-            className="flex items-center gap-1.5 bg-[#ccff00] text-black text-xs font-bold px-3 py-1.5 rounded-full hover:brightness-110 transition"
+            href="/my-plan?tab=plan"
+            className="flex items-center gap-1.5 bg-[#ccff00] text-black text-xs font-bold px-3 py-1.5 rounded-full hover:brightness-110 transition active:scale-95 cursor-pointer"
           >
             <span>Plan</span>
             <span className="bg-black/20 text-black px-1.5 py-0.5 rounded-full text-[10px]">
@@ -62,8 +62,8 @@ export default function Navbar() {
           </Link>
 
           <Link
-            href="/my-plan"
-            className="flex items-center gap-1.5 border border-zinc-700 text-zinc-300 text-xs font-bold px-3 py-1.5 rounded-full hover:border-zinc-500 transition"
+            href="/my-plan?tab=saved"
+            className="flex items-center gap-1.5 border border-zinc-700 text-zinc-300 text-xs font-bold px-3 py-1.5 rounded-full hover:border-zinc-500 hover:text-white transition active:scale-95 cursor-pointer"
           >
             <span>Saved</span>
             <span className="bg-zinc-800 text-zinc-300 px-1.5 py-0.5 rounded-full text-[10px]">

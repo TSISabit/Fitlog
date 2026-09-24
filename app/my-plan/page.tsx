@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { Clock, Flame, Star, Check, X, ArrowRight } from "lucide-react";
 import { useWorkout } from "@/context/WorkoutContext";
 import { Workout } from "@/types/workout";
@@ -19,9 +20,19 @@ function getDuration(item: Workout): number {
   return isNaN(parsed) ? 0 : parsed;
 }
 
-export default function MyPlanPage() {
+function MyPlanContent() {
   const { todayPlan, savedWorkouts, removeFromPlan, removeFromSaved, toggleDone } = useWorkout();
+  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<"plan" | "saved">("plan");
+
+  useEffect(() => {
+    const tabParam = searchParams.get("tab");
+    if (tabParam === "saved") {
+      setActiveTab("saved");
+    } else if (tabParam === "plan") {
+      setActiveTab("plan");
+    }
+  }, [searchParams]);
 
   const totalMinutes = todayPlan.reduce((acc, curr) => acc + getDuration(curr), 0);
   const totalCalories = todayPlan.reduce((acc, curr) => acc + getCalories(curr), 0);
@@ -61,7 +72,7 @@ export default function MyPlanPage() {
       <div className="flex border-b border-zinc-800 gap-8">
         <button
           onClick={() => setActiveTab("plan")}
-          className={`pb-3 text-sm font-bold tracking-wider uppercase transition-colors relative ${
+          className={`pb-3 text-sm font-bold tracking-wider uppercase transition-colors relative cursor-pointer ${
             activeTab === "plan" ? "text-[#ccff00]" : "text-zinc-500 hover:text-zinc-300"
           }`}
         >
@@ -72,7 +83,7 @@ export default function MyPlanPage() {
         </button>
         <button
           onClick={() => setActiveTab("saved")}
-          className={`pb-3 text-sm font-bold tracking-wider uppercase transition-colors relative ${
+          className={`pb-3 text-sm font-bold tracking-wider uppercase transition-colors relative cursor-pointer ${
             activeTab === "saved" ? "text-[#ccff00]" : "text-zinc-500 hover:text-zinc-300"
           }`}
         >
@@ -140,7 +151,7 @@ export default function MyPlanPage() {
                 {activeTab === "plan" && (
                   <button
                     onClick={() => toggleDone(item.id)}
-                    className={`p-1.5 rounded transition ${
+                    className={`p-1.5 rounded transition cursor-pointer ${
                       item.isDone
                         ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40"
                         : "bg-zinc-800 hover:bg-zinc-700 text-zinc-400"
@@ -153,7 +164,7 @@ export default function MyPlanPage() {
 
                 <button
                   onClick={() => (activeTab === "plan" ? removeFromPlan(item.id) : removeFromSaved(item.id))}
-                  className="p-1.5 rounded bg-zinc-800 hover:bg-red-950/40 hover:text-red-400 text-zinc-400 transition"
+                  className="p-1.5 rounded bg-zinc-800 hover:bg-red-950/40 hover:text-red-400 text-zinc-400 transition cursor-pointer"
                   title="Remove"
                 >
                   <X className="w-4 h-4" />
@@ -164,5 +175,13 @@ export default function MyPlanPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function MyPlanPage() {
+  return (
+    <Suspense fallback={<div className="max-w-7xl mx-auto px-4 py-20 text-center text-zinc-500">Loading plan...</div>}>
+      <MyPlanContent />
+    </Suspense>
   );
 }
