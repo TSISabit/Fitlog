@@ -5,7 +5,7 @@ FitLog is a dark, responsive, and performance-driven gym companion built with **
 ---
 
 ## 🚀 Live Demo & API Endpoints
-- **Live URL**: [Add your Vercel URL after deployment]
+- **Live URL**: https://fitlog-indol-pi.vercel.app/
 - **API Endpoints**: 
   - All Lifts: `https://api.abcz.workers.dev/api/fitlog`
   - Single Detail: `https://api.abcz.workers.dev/api/fitlog/:id`
